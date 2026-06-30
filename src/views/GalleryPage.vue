@@ -2,44 +2,85 @@
   <main class="gallery-page">
     <header class="gallery-header">
       <h1>Critique Gallery</h1>
-      <p>Development placeholder gallery</p>
+      <p>Real gallery data from DynamoDB</p>
     </header>
 
-    <section class="gallery-grid">
-      <article v-for="artwork in artworks" :key="artwork.id" class="gallery-card">
-        <img :src="artwork.imageUrl" :alt="artwork.title" class="gallery-image" />
+    <p v-if="isLoading" class="gallery-message">Loading gallery...</p>
+
+    <p v-else-if="errorMessage" class="gallery-error">
+      {{ errorMessage }}
+    </p>
+
+    <section v-else-if="artworks.length" class="gallery-grid">
+      <article v-for="artwork in artworks" :key="artwork.galleryItemId" class="gallery-card">
+        <img
+          :src="artwork.thumbnailUrl || artwork.imageUrl"
+          :alt="artwork.title"
+          class="gallery-image"
+        />
 
         <div class="gallery-info">
           <h2>{{ artwork.title }}</h2>
-          <p>{{ artwork.date }}</p>
+          <p>{{ formatArtworkDate(artwork.artworkDate) }}</p>
         </div>
       </article>
     </section>
+
+    <p v-else class="gallery-message">No gallery items found.</p>
   </main>
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue'
+
 defineOptions({
   name: 'GalleryPage',
 })
 
-const placeholderImage =
-  'https://images.unsplash.com/photo-1603979649806-5299879db16b?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+const API_URL = 'https://wm8znkb2f6.execute-api.us-east-2.amazonaws.com/dev/gallery'
 
-const artworks = [
-  { id: 1, title: 'Mountain Study', date: 'Apr 2026', imageUrl: placeholderImage },
-  { id: 2, title: 'Still Life Pears', date: 'Apr 2026', imageUrl: placeholderImage },
-  { id: 3, title: 'Quiet Barn', date: 'Mar 2026', imageUrl: placeholderImage },
-  { id: 4, title: 'Rooster Sketch', date: 'Mar 2026', imageUrl: placeholderImage },
-  { id: 5, title: 'Blue Vase', date: 'Feb 2026', imageUrl: placeholderImage },
-  { id: 6, title: 'Evening Field', date: 'Feb 2026', imageUrl: placeholderImage },
-  { id: 7, title: 'Goat Portrait', date: 'Jan 2026', imageUrl: placeholderImage },
-  { id: 8, title: 'Charcoal Hare', date: 'Jan 2026', imageUrl: placeholderImage },
-  { id: 9, title: 'Window Light', date: 'Dec 2025', imageUrl: placeholderImage },
-  { id: 10, title: 'Aspen Path', date: 'Dec 2025', imageUrl: placeholderImage },
-  { id: 11, title: 'Clay Pot Study', date: 'Nov 2025', imageUrl: placeholderImage },
-  { id: 12, title: 'Western Sky', date: 'Nov 2025', imageUrl: placeholderImage },
-]
+const artworks = ref([])
+const isLoading = ref(false)
+const errorMessage = ref('')
+
+async function loadGallery() {
+  isLoading.value = true
+  errorMessage.value = ''
+
+  try {
+    const response = await fetch(API_URL)
+
+    if (!response.ok) {
+      throw new Error(`Gallery request failed with status ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    artworks.value = data
+  } catch (error) {
+    console.error('Error loading gallery:', error)
+    errorMessage.value = 'Unable to load gallery items right now.'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+function formatArtworkDate(dateValue) {
+  if (!dateValue) {
+    return ''
+  }
+
+  const date = new Date(dateValue)
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
+onMounted(() => {
+  loadGallery()
+})
 </script>
 
 <style scoped>
@@ -94,6 +135,16 @@ const artworks = [
   margin: 4px 0 0;
   font-size: 0.875rem;
   color: #777;
+}
+
+.gallery-message,
+.gallery-error {
+  margin-top: 24px;
+  font-size: 1rem;
+}
+
+.gallery-error {
+  color: #b00020;
 }
 
 @media (max-width: 900px) {

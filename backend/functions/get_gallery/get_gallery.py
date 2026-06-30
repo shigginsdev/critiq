@@ -1,4 +1,5 @@
 import logging
+import json
 from shared.dynamodb import get_gallery_table
 
 logger = logging.getLogger()
@@ -12,13 +13,8 @@ ALLOWED_ORIGINS = [
 
 def get_gallery(event):
     table = get_gallery_table()
-
     response = table.scan()
-
-    return {
-        "statusCode": 200,
-        "body": response["Items"]
-    }
+    return response["Items"]    
 
 def lambda_handler(event, context):
     """Main AWS Lambda handler"""
