@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/app',
+      redirect: '/gallery',
     },
     {
       path: '/gallery',
