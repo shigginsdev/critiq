@@ -12,6 +12,10 @@ const router = createRouter({
       path: '/gallery',
       component: GalleryPage,
     },
+    {
+      path: '/profile',
+      component: () => import('../views/ProfilePage.vue'),
+    },
   ],
 })
 
