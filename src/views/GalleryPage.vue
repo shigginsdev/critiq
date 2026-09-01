@@ -32,6 +32,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { fetchAuthSession } from 'aws-amplify/auth'
 
 defineOptions({
   name: 'GalleryPage',
@@ -48,7 +49,17 @@ async function loadGallery() {
   errorMessage.value = ''
 
   try {
-    const response = await fetch(API_URL)
+    const session = await fetchAuthSession()
+    const token = session.tokens?.idToken?.toString()
+
+    console.log('Has token?', !!token)
+
+    const response = await fetch(API_URL, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
     if (!response.ok) {
       throw new Error(`Gallery request failed with status ${response.status}`)
