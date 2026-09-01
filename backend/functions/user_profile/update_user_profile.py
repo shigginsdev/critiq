@@ -62,19 +62,12 @@ def get_user_id(event: dict[str, Any]) -> str | None:
     jwt_claims = jwt.get("claims") or {}
 
     if jwt_claims.get("sub"):
-         return (
-            jwt_claims.get("sub"),
-            jwt_claims.get("email"),
-        )
+        return jwt_claims["sub"]
 
     # API Gateway REST API Cognito authorizer
     claims = authorizer.get("claims") or {}
-    email = claims.get("email")
 
-    return (
-        claims.get("sub"),
-        claims.get("email"),
-    )
+    return claims.get("sub")
 
 
 def lambda_handler(event, context):
@@ -107,9 +100,9 @@ def lambda_handler(event, context):
             },
         )
 
-    user_id, email = get_user_id(event)
+    user_id = get_user_id(event)
 
-    if not user_id or not email:
+    if not user_id:
         return create_response(
             401,
             origin,
@@ -175,7 +168,6 @@ def lambda_handler(event, context):
         table.update_item(
             Key={
                 "userID": user_id,
-                "email": email
             },
             UpdateExpression=(
                 "SET displayName = :displayName, "

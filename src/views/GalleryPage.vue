@@ -50,7 +50,7 @@ async function loadGallery() {
   errorMessage.value = ''
 
   try {
-    const session = await getAuthToken()
+    const session = await fetchAuthSession()
     const token = session.tokens?.idToken?.toString()
 
     console.log('Has token?', !!token)
