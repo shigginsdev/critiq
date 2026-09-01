@@ -33,7 +33,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 //import { fetchAuthSession } from 'aws-amplify/auth'
-import { fetchAuthSession } from '@backend/api/auth'
+import { fetchAuthSession } from '@/services/auth'
 
 defineOptions({
   name: 'GalleryPage',
