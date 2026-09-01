@@ -1,4 +1,4 @@
-import { getAuthToken } from '../../src/auth'
+import { getAuthToken } from '@/services/auth'
 
 const GALLERY_API_URL = 'your-api-url'
 
