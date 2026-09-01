@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { getAuthToken } from '@/services/auth'
+import { fetchAuthSession } from 'aws-amplify/auth'
 
 interface ProfileForm {
   displayName: string
@@ -138,7 +138,7 @@ const saveProfile = async () => {
   isSaving.value = true
 
   try {
-    const session = await getAuthToken()
+    const session = await fetchAuthSession()
     const idToken = session.tokens?.idToken?.toString()
 
     if (!idToken) {

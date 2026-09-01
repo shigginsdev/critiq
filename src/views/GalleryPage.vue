@@ -32,8 +32,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-//import { fetchAuthSession } from 'aws-amplify/auth'
-import { getAuthToken } from '@/services/auth'
+import { fetchAuthSession } from 'aws-amplify/auth'
 
 defineOptions({
   name: 'GalleryPage',
