@@ -33,7 +33,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 //import { fetchAuthSession } from 'aws-amplify/auth'
-import { fetchAuthSession } from '@/services/auth'
+import { getAuthToken } from '@/services/auth'
 
 defineOptions({
   name: 'GalleryPage',
@@ -50,7 +50,7 @@ async function loadGallery() {
   errorMessage.value = ''
 
   try {
-    const session = await fetchAuthSession()
+    const session = await getAuthToken()
     const token = session.tokens?.idToken?.toString()
 
     console.log('Has token?', !!token)
