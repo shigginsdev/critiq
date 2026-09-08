@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { fetchAuthSession } from 'aws-amplify/auth'
+import { getAuthToken } from '@/services/auth'
 
 interface ProfileForm {
   displayName: string
@@ -138,8 +138,7 @@ const saveProfile = async () => {
   isSaving.value = true
 
   try {
-    const session = await fetchAuthSession()
-    const idToken = session.tokens?.idToken?.toString()
+    const idToken = await getAuthToken()
 
     if (!idToken) {
       throw new Error('Your authentication session could not be found.')

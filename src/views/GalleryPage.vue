@@ -32,7 +32,6 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-//import { fetchAuthSession } from 'aws-amplify/auth'
 import { getAuthToken } from '@/services/auth'
 
 defineOptions({
