@@ -41,7 +41,16 @@ defineOptions({
 
 const API_URL = 'https://wm8znkb2f6.execute-api.us-east-2.amazonaws.com/dev/gallery'
 
-const artworks = ref([])
+interface Artwork {
+  galleryItemId: string
+  title: string
+  imageUrl: string
+  thumbnailUrl?: string
+  artworkDate?: string
+}
+
+const artworks = ref<Artwork[]>([])
+
 const isLoading = ref(false)
 const errorMessage = ref('')
 
@@ -74,7 +83,7 @@ async function loadGallery() {
   }
 }
 
-function formatArtworkDate(dateValue) {
+function formatArtworkDate(dateValue?: string) {
   if (!dateValue) {
     return ''
   }
