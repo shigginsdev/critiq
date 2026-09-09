@@ -135,11 +135,16 @@ const avatarLoadFailed = ref(false)
 const getProfileApiUrl = import.meta.env.VITE_GET_PROFILE_API_URL
 const updateProfileApiUrl = import.meta.env.VITE_UPDATE_PROFILE_API_URL
 
+console.log('Profile API URL:', getProfileApiUrl)
+
 const normalizeInstagramHandle = (handle: string): string => {
   return handle.replace(/^@/, '').trim()
 }
 
 const loadProfile = async () => {
+  console.log('Loading profile...')
+  console.log('Profile API URL:', getProfileApiUrl)
+
   statusMessage.value = ''
   hasError.value = false
 
