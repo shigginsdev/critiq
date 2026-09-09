@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { getAuthToken } from '@/services/auth'
 
 interface ProfileForm {
@@ -106,6 +106,17 @@ interface ProfileForm {
   instagramHandle: string
 }
 
+interface UserProfileResponse {
+  userID?: string
+  email?: string
+  displayName?: string
+  artistWebsite?: string
+  bio?: string
+  avatarUrl?: string
+  instagramHandle?: string
+  message?: string
+}
+
 const profile = reactive<ProfileForm>({
   displayName: '',
   artistWebsite: '',
@@ -114,15 +125,59 @@ const profile = reactive<ProfileForm>({
   instagramHandle: '',
 })
 
+const isLoading = ref(false)
 const isSaving = ref(false)
+
 const statusMessage = ref('')
 const hasError = ref(false)
 const avatarLoadFailed = ref(false)
 
+const getProfileApiUrl = import.meta.env.VITE_GET_PROFILE_API_URL
 const updateProfileApiUrl = import.meta.env.VITE_UPDATE_PROFILE_API_URL
 
 const normalizeInstagramHandle = (handle: string): string => {
   return handle.replace(/^@/, '').trim()
+}
+
+const loadProfile = async () => {
+  statusMessage.value = ''
+  hasError.value = false
+
+  if (!getProfileApiUrl) {
+    hasError.value = true
+    statusMessage.value = 'The profile API URL has not been configured.'
+    return
+  }
+
+  isLoading.value = true
+
+  try {
+    const idToken = await getAuthToken()
+
+    const response = await fetch(getProfileApiUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    })
+
+    const responseBody: UserProfileResponse | null = await response.json().catch(() => null)
+
+    if (!response.ok) {
+      throw new Error(responseBody?.message ?? 'Unable to load your profile.')
+    }
+
+    profile.displayName = responseBody?.displayName ?? ''
+    profile.artistWebsite = responseBody?.artistWebsite ?? ''
+    profile.bio = responseBody?.bio ?? ''
+    profile.avatarUrl = responseBody?.avatarUrl ?? ''
+    profile.instagramHandle = responseBody?.instagramHandle ?? ''
+  } catch (error) {
+    hasError.value = true
+    statusMessage.value = error instanceof Error ? error.message : 'Unable to load your profile.'
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const saveProfile = async () => {
@@ -139,10 +194,6 @@ const saveProfile = async () => {
 
   try {
     const idToken = await getAuthToken()
-
-    if (!idToken) {
-      throw new Error('Your authentication session could not be found.')
-    }
 
     const response = await fetch(updateProfileApiUrl, {
       method: 'PUT',
@@ -175,6 +226,10 @@ const saveProfile = async () => {
     isSaving.value = false
   }
 }
+
+onMounted(() => {
+  loadProfile()
+})
 </script>
 
 <style scoped>
