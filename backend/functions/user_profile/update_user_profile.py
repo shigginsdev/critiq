@@ -10,6 +10,7 @@ table = dynamodb.Table(os.environ["USER_PROFILE_TABLE"])
 
 ALLOWED_ORIGINS = {
     "https://main.d2w9sax6krir3g.amplifyapp.com",
+    "https://4h2ydmma65.execute-api.us-east-2.amazonaws.com/dev"
     "http://localhost:5173",
 }
 
