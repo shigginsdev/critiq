@@ -3,7 +3,7 @@
     <Authenticator>
       <template #default="{ user, signOut }">
         <header class="app-header">
-          <p class="welcome-message">Welcome, {{ user.username }}!</p>
+          <p class="welcome-message">Welcome, {{ user.displayName }}!</p>
 
           <!-- Desktop navigation -->
           <nav class="desktop-actions" aria-label="Account navigation">

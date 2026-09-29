@@ -3,12 +3,14 @@ import os
 from typing import Any
 
 import boto3
+from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(os.environ["USER_PROFILE_TABLE"])
 
 ALLOWED_ORIGINS = {
     "https://main.d2w9sax6krir3g.amplifyapp.com",
+    "https://4h2ydmma65.execute-api.us-east-2.amazonaws.com/dev",
     "http://localhost:5173",
 }
 
@@ -110,13 +112,12 @@ def lambda_handler(event, context):
             },
         )
 
-    response = table.get_item(
-        Key={
-            "userID": user_id
-        }
+    response = table.query(
+        KeyConditionExpression=Key("userID").eq(user_id)
     )
 
-    profile = response.get("Item")
+    items = response.get("Items", [])
+    profile = items[0] if items else None
 
     if not profile:
         return create_response(
