@@ -1,6 +1,6 @@
 import { getAuthToken } from './auth'
 
-const PROFILE_API_URL = 'https://4h2ydmma65.execute-api.us-east-2.amazonaws.com/dev'
+const PROFILE_API_URL = import.meta.env.VITE_GET_PROFILE_API_URL
 
 export interface UserProfile {
   userId: string
@@ -13,6 +13,10 @@ export interface UserProfile {
 }
 
 export async function getUserProfile(): Promise<UserProfile> {
+  if (!PROFILE_API_URL) {
+    throw new Error('The profile API URL has not been configured.')
+  }
+
   const token = await getAuthToken()
 
   const response = await fetch(PROFILE_API_URL, {

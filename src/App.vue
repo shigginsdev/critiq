@@ -3,7 +3,7 @@
     <Authenticator>
       <template #default="{ user, signOut }">
         <header class="app-header">
-          <p class="welcome-message">Welcome, {{ user.displayName }}!</p>
+          <WelcomeMessage :user-id="user.userId" class="welcome-message" />
 
           <!-- Desktop navigation -->
           <nav class="desktop-actions" aria-label="Account navigation">
@@ -55,6 +55,7 @@
 import { ref } from 'vue'
 import { Authenticator } from '@aws-amplify/ui-vue'
 import { RouterLink, RouterView } from 'vue-router'
+import WelcomeMessage from '@/components/WelcomeMessage.vue'
 import '@aws-amplify/ui-vue/styles.css'
 
 const isMenuOpen = ref(false)
