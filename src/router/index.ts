@@ -5,6 +5,10 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: '/add-image',
+      component: () => import('../views/AddImagePage.vue'),
+    },
+    {
       path: '/',
       redirect: '/gallery',
     },

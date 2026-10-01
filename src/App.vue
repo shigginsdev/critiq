@@ -7,6 +7,7 @@
 
           <!-- Desktop navigation -->
           <nav class="desktop-actions" aria-label="Account navigation">
+            <RouterLink class="header-button" to="/add-image">Add Image</RouterLink>
             <RouterLink class="header-button" to="/profile"> Profile </RouterLink>
 
             <button class="header-button" type="button" @click="signOut">Sign Out</button>
@@ -35,6 +36,9 @@
             class="mobile-menu"
             aria-label="Account navigation"
           >
+            <RouterLink class="mobile-menu-item" to="/add-image" @click="closeMenu">
+              Add Image
+            </RouterLink>
             <RouterLink class="mobile-menu-item" to="/profile" @click="closeMenu">
               Profile
             </RouterLink>
